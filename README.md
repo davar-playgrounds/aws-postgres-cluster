@@ -14,7 +14,7 @@ dyego@ubuntu:~$ source ~/python3-ansible/bin/activate
 
 ## Know issues
 
-- Terraform aws_ami data source [doesn't cache the AMI id](https://github.com/hashicorp/terraform/issues/13749). It does each time terraform recreates the aws_instance resource. To avoid that, I fixed the AMI id on terraform.
+- Terraform aws_ami data source [doesn't cache the AMI id](https://github.com/hashicorp/terraform/issues/13749). It does each time terraform recreates the aws_instance resource. To avoid that, I fixed the AMI id on terraform. I kept the reference commented on the terraform file.
 
 ## References
 
