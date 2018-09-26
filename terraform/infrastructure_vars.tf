@@ -1,10 +1,12 @@
-variable "profile" {
-  default = "dyego"
-}
+variable "aws_access_key" {}
+
+variable "aws_secret_key" {}
 
 variable "region" {
   default = "eu-west-1"
 }
+
+variable "public_key" {}
 
 variable "project_name" {
   default = "aws-pg-cls"

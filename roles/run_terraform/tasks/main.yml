@@ -1,0 +1,13 @@
+- terraform:
+    project_path: "{{ playbook_dir }}/terraform/"
+    state: "present"
+    variables:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      region: "{{ region }}"
+      public_key: "{{ lookup('file', '{{ playbook_dir }}/files/id_rsa.pub') }}"
+      project_name: "{{ project_name }}"
+      vpc_cidr: "{{ vpc_cidr }}"
+      subnet1_cidr: "{{ subnet1_cidr }}"
+      subnet2_cidr: "{{ subnet2_cidr }}"
+    force_init: yes

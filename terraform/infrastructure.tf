@@ -1,5 +1,6 @@
 provider "aws" {
-  profile = "${var.profile}"
+  access_key = "${var.aws_access_key}"
+  secret_key = "${var.aws_secret_key}"
   region = "${var.region}"
 }
 
@@ -80,45 +81,71 @@ resource "aws_route_table_association" "rtb-subnet2" {
 
 resource "aws_key_pair" "keypair" {
   key_name = "${var.project_name}-key"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDI1eXRZI5Fm29LU3//R9Mzn4ubNZSI2xm500m6u0YD/ePKSeraWJ0DvBm6uYenEyaB/Iv7koM0i94gwTa7cwMMo+lm7IZJO8OPlfDJp8jmGPGZbjyOGJDwEcAiHvuTRJKG46iC2mbUNyPNANI/ODba0/y/rfYxRSFIFaKt0VEF3L3sxSgE/0dmeiemzRKs8GQGX/qTaxIaY0BI0Q09Jy+MtEK+QJoo99YkeRMSNd7qdn7Cfy8lehfE/X6sS8Bb9Mde3Z6oMpxlzK4lcXA24Mi0kzViDIL7Qv5AAuIfBx1N5Mu6lv7CETLlHLSk32c+zPe/R9qMho7scCV1c81AXGEH dae@gtic-8234m"
+  public_key = "${var.public_key}"
 }
 
-data "aws_ami" "debian" {
-  most_recent = true
+# data "aws_ami" "debian" {
+#   most_recent = true
 
-  filter {
-    name   = "name"
-    values = ["debian-stretch-hvm-x86_64-gp2-*"]
-  }
+#   filter {
+#     name   = "name"
+#     values = ["debian-stretch-hvm-x86_64-gp2-*"]
+#   }
   
-  filter {
-    name   = "architecture"
-    values = ["x86_64"]
-  }
+#   filter {
+#     name   = "architecture"
+#     values = ["x86_64"]
+#   }
 
-  filter {
-    name   = "block-device-mapping.volume-type"
-    values = ["gp2"]
-  }
+#   filter {
+#     name   = "block-device-mapping.volume-type"
+#     values = ["gp2"]
+#   }
 
-  filter {
-    name   = "ena-support"
-    values = ["true"]
-  }
+#   filter {
+#     name   = "ena-support"
+#     values = ["true"]
+#   }
 
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
+#   filter {
+#     name   = "virtualization-type"
+#     values = ["hvm"]
+#   }
 
-  owners = ["679593333241"] # Debian
+#   owners = ["679593333241"]
+# }
+
+resource "aws_security_group" "ssh" {
+  name        = "${var.project_name}-ssh-sg"
+  description = "Allow SSH"
+  vpc_id      = "${aws_vpc.vpc.id}"
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = "${merge(
+    local.common_tags,
+    map(
+      "Name", "${var.project_name}-ssh-sg"
+    )
+  )}"
 }
 
 resource "aws_instance" "app1" {
-  ami           = "${data.aws_ami.debian.id}"
+  # ami = "${data.aws_ami.debian.id}"
+  ami = "ami-0ad001cb48e7f2a56"
   instance_type = "t2.micro"
   subnet_id = "${aws_subnet.subnet1.id}"
   key_name = "${aws_key_pair.keypair.key_name}"
+  security_groups = ["${aws_security_group.ssh.id}"]
   tags = "${merge(
     local.common_tags,
     map(

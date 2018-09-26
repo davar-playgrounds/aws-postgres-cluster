@@ -3,3 +3,4 @@
   become: no
   roles:
     - gen_key_pair
+    - run_terraform
