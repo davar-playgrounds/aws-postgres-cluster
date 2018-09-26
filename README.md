@@ -10,6 +10,7 @@ This project was tested using a ubuntu 18.04 as workstation/desktop
 dyego@ubuntu:~$ sudo apt install python-pip python-virtualenv
 dyego@ubuntu:~$ virtualenv -p /usr/bin/python3 ~/python3-ansible
 dyego@ubuntu:~$ source ~/python3-ansible/bin/activate
+(python3-ansible) dyego@ubuntu:~$ pip install ansible
 ```
 
 ## Know issues
