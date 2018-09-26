@@ -1,5 +1,12 @@
+# ide directories
 .idea/
 .vscode/
+
+# ansible retry files
+*.retry
+# sensible files and directories
+group_vars/all.yml
+files/
 
 # Local .terraform directories
 **/.terraform/*
@@ -10,9 +17,3 @@
 
 # Crash log files
 crash.log
-
-# Ignore any .tfvars files that are generated automatically for each Terraform run. Most
-# .tfvars files are managed as part of configuration and so should be included in
-# version control.
-#
-# example.tfvars
