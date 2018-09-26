@@ -1,7 +1,7 @@
 ---
 aws_access_key: put-here-your-access-key
 aws_secret_key: put-here-your-secret-key
-aws_region: us-east-1
+region: us-east-1
 project_name: aws-pg-cls
 vpc_cidr: 10.10.0.0/16
 subnet1_cidr: 10.10.0.0/24
