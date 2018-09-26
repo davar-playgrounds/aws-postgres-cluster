@@ -1,0 +1,30 @@
+- name: "Make sure files dir exist"
+  file:
+    path: "{{ playbook_dir }}/files/"
+    state: "directory"
+
+- name: "Check if id_rsa exist"
+  stat:
+    path: "{{ playbook_dir }}/files/id_rsa"
+  register: id_rsa_stat
+
+- name: "Check if id_rsa.pub exist"
+  stat:
+    path: "{{ playbook_dir }}/files/id_rsa.pub"
+  register: id_rsa_pub_stat
+
+- name: "Remove private key if public key doesn't exist"
+  file:
+    path: "{{ playbook_dir }}/files/id_rsa"
+    state: "absent"
+  when: id_rsa_pub_stat.stat.exists == false
+
+- name: "Remove public key if private key doesn't exist"
+  file:
+    path: "{{ playbook_dir }}/files/id_rsa"
+    state: "absent"
+  when: id_rsa_stat.stat.exists == false
+
+- name: "Create a key pair if it is missing"
+  shell: "ssh-keygen -b 2048 -t rsa -f {{ playbook_dir }}/files/id_rsa -q -N ''"
+  when: id_rsa_stat.stat.exists == false or id_rsa_pub_stat.stat.exists == false

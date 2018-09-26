@@ -1,0 +1,5 @@
+---
+aws_access_key: put-here-your-access-key
+aws_secret_key: put-here-your-secret-key
+aws_region: us-east-1
+project_name: aws-pg-cls
