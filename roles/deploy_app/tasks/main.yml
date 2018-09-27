@@ -1,0 +1,24 @@
+- name: "Make sure docker-compose dir exist"
+  file:
+    path: "docker-compose/"
+    state: "directory"
+
+- name: "Make sure nginx dir exist"
+  file:
+    path: "docker-compose/nginx/"
+    state: "directory"
+
+- name: "Copy nginx conf"
+  template:
+    src: "default.conf.j2"
+    dest: "docker-compose/nginx/default.conf"
+
+- name: "Make sure app dir exist"
+  file:
+    path: "docker-compose/app/"
+    state: "directory"
+
+- name: "Copy index.php"
+  template:
+    src: "index.php.j2"
+    dest: "docker-compose/app/index.php"
