@@ -11,3 +11,12 @@
       subnet1_cidr: "{{ subnet1_cidr }}"
       subnet2_cidr: "{{ subnet2_cidr }}"
     force_init: yes
+  register: terraform_output
+
+- debug:
+    var: terraform_output
+
+- name: Add IP address 
+  add_host:
+    hostname: "{{ terraform_output.outputs.app1_public_ip.value }}"
+    groups: ec2

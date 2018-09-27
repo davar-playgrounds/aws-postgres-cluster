@@ -4,3 +4,8 @@
   roles:
     - gen_key_pair
     - run_terraform
+
+- hosts: ec2
+  become: yes
+  tasks:
+    - ping:

@@ -153,3 +153,7 @@ resource "aws_instance" "app1" {
     )
   )}"
 }
+
+output "app1_public_ip" {
+  value = "${aws_instance.app1.public_ip}"
+}
