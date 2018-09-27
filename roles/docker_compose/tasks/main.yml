@@ -1,0 +1,14 @@
+- name: "Make sure docker-compose dir exist"
+  file:
+    path: "docker-compose/"
+    state: "directory"
+
+- name: "Copy docker-compose"
+  template:
+    src: "{{ tpl_prefix }}-docker-compose.yml.j2"
+    dest: "docker-compose/docker-compose.yml"
+
+- name: "Execute docker-compose"
+  shell:
+    cmd: "docker-compose up -d"
+    chdir: "docker-compose/"

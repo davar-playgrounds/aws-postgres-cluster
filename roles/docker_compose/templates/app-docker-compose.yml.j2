@@ -1,0 +1,29 @@
+version: '2.1'
+services:
+  nginx:
+    image: 'nginx:1.13-alpine'
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - '80:80'
+    links:
+      - php-fpm
+    volumes:
+      - ./app:/app
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      internet:
+      backend:
+
+  php-fpm:
+    image: 'php:7.2-fpm-alpine'
+    container_name: php-fpm
+    restart: unless-stopped
+    volumes:
+      - ./app:/app
+    networks:
+      backend:
+
+networks:
+  internet:
+  backend:
