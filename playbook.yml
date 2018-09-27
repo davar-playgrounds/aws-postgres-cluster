@@ -7,5 +7,5 @@
 
 - hosts: ec2
   become: yes
-  tasks:
-    - ping:
+  roles:
+    - linux_pre
