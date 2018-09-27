@@ -1,0 +1,34 @@
+- name: "Update linux"
+  package:
+    name: "*"
+    state: "latest"
+    force_apt_get: True
+
+- name: "Install required packages"
+  package:
+    name: "{{ item }}"
+    state: "latest"
+    force_apt_get: True
+  with_items:
+    - "apt-transport-https"
+    - "ca-certificates"
+    - "curl"
+    - "gnupg2"
+    - "software-properties-common"
+    - "python-docker"
+
+- name: "Add docker-ce apt signing key"
+  apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+
+- name: "Add docker-ce repository"
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_facts['lsb']['codename'] }} stable"
+    state: present
+
+- name: "Install docker-ce package"
+  package:
+    name: "docker-ce"
+    state: "latest"
+    force_apt_get: True
