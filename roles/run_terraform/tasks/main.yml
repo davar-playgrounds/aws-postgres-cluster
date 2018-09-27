@@ -17,11 +17,10 @@
 - name: "Add EC2 instances to the inventory in runtime"
   add_host:
     hostname: "{{ item['hostname'] }}"
-    groups: ec2
+    groups: "{{ item['groups'] }}"
     private_ip: "{{ item['private_ip'] }}"
-    provision_type: "{{ item['provision_type'] }}"
   with_items:
-    - { hostname: "{{ terraform_output['outputs']['app-public-ip']['value'] }}", private_ip: "{{ terraform_output['outputs']['app-private-ip']['value'] }}", provision_type: "app" }
-    - { hostname: "{{ terraform_output['outputs']['db-master-public-ip']['value'] }}", private_ip: "{{ terraform_output['outputs']['db-master-private-ip']['value'] }}", provision_type: "db-master" }
-    - { hostname: "{{ terraform_output['outputs']['db-slave-public-ip']['value'] }}", private_ip: "{{ terraform_output['outputs']['db-slave-private-ip']['value'] }}", provision_type: "db-slave" }
+    - { hostname: "{{ terraform_output['outputs']['app-public-ip']['value'] }}", private_ip: "{{ terraform_output['outputs']['app-private-ip']['value'] }}", groups: "app" }
+    - { hostname: "{{ terraform_output['outputs']['db-master-public-ip']['value'] }}", private_ip: "{{ terraform_output['outputs']['db-master-private-ip']['value'] }}", groups: "db-master" }
+    - { hostname: "{{ terraform_output['outputs']['db-slave-public-ip']['value'] }}", private_ip: "{{ terraform_output['outputs']['db-slave-private-ip']['value'] }}", groups: "db-slave" }
     
