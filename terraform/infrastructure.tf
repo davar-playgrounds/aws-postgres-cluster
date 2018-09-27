@@ -117,7 +117,7 @@ resource "aws_key_pair" "default" {
 
 resource "aws_security_group" "ssh" {
   name        = "${var.project_name}-ssh-sg"
-  description = "Allow SSH"
+  description = "Open SSH port"
   vpc_id      = "${aws_vpc.main.id}"
   ingress {
     from_port   = 22
@@ -139,13 +139,37 @@ resource "aws_security_group" "ssh" {
   )}"
 }
 
+resource "aws_security_group" "app" {
+  name        = "${var.project_name}-app-sg"
+  description = "Open APP ports e.g. 80"
+  vpc_id      = "${aws_vpc.main.id}"
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = "${merge(
+    local.common_tags,
+    map(
+      "Name", "${var.project_name}-app-sg"
+    )
+  )}"
+}
+
 resource "aws_instance" "app" {
   # ami = "${data.aws_ami.debian.id}"
   ami = "${local.ami}"
   instance_type = "t2.micro"
   subnet_id = "${aws_subnet.public-a.id}"
   key_name = "${aws_key_pair.default.key_name}"
-  vpc_security_group_ids = ["${aws_security_group.ssh.id}"]
+  vpc_security_group_ids = ["${aws_security_group.ssh.id}", "${aws_security_group.app.id}"]
   tags = "${merge(
     local.common_tags,
     map(
