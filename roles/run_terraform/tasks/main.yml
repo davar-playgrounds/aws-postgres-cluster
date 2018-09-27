@@ -1,4 +1,5 @@
-- terraform:
+- name: "Execute terraform to create infrastructure"
+  terraform:
     project_path: "{{ playbook_dir }}/terraform/"
     state: "present"
     variables:
@@ -13,10 +14,14 @@
     force_init: yes
   register: terraform_output
 
-- debug:
-    var: terraform_output
-
-- name: Add IP address 
+- name: "Add EC2 instances to the inventory in runtime"
   add_host:
-    hostname: "{{ terraform_output.outputs.app1_public_ip.value }}"
+    hostname: "{{ item['hostname'] }}"
     groups: ec2
+    private_ip: "{{ item['private_ip'] }}"
+    provision_type: "{{ item['provision_type'] }}"
+  with_items:
+    - { hostname: "{{ terraform_output['outputs']['app-public-ip']['value'] }}", private_ip: "{{ terraform_output['outputs']['app-private-ip']['value'] }}", provision_type: "app" }
+    - { hostname: "{{ terraform_output['outputs']['db-master-public-ip']['value'] }}", private_ip: "{{ terraform_output['outputs']['db-master-private-ip']['value'] }}", provision_type: "db-master" }
+    - { hostname: "{{ terraform_output['outputs']['db-slave-public-ip']['value'] }}", private_ip: "{{ terraform_output['outputs']['db-slave-private-ip']['value'] }}", provision_type: "db-slave" }
+    
