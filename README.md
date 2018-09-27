@@ -17,6 +17,10 @@ dyego@ubuntu:~$ source ~/python3-ansible/bin/activate
 
 - Terraform aws_ami data source [doesn't cache the AMI id](https://github.com/hashicorp/terraform/issues/13749). It does each time terraform recreates the aws_instance resource. To avoid that, I fixed the AMI id on terraform. I kept the reference commented on the terraform file.
 
+## Improvements
+
+This playbook covers only Debian distribution, using module apt only, for example. It should be improved to cover other distributions.
+
 ## References
 
 - [Terraform - aws_security_group](https://www.terraform.io/docs/providers/aws/r/security_group.html)
