@@ -25,6 +25,11 @@ variable "subnet2_cidr" {
 }
 
 locals {
+  ami = "ami-0ad001cb48e7f2a56"
+}
+
+
+locals {
   common_tags = {
     Project = "${var.project_name}"
   }

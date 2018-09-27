@@ -4,7 +4,7 @@ provider "aws" {
   region = "${var.region}"
 }
 
-resource "aws_vpc" "vpc" {
+resource "aws_vpc" "main" {
   cidr_block = "${var.vpc_cidr}"
   enable_dns_support = true
   enable_dns_hostnames = true
@@ -17,8 +17,8 @@ resource "aws_vpc" "vpc" {
   )}"
 }
 
-resource "aws_internet_gateway" "igw" {
-  vpc_id = "${aws_vpc.vpc.id}"
+resource "aws_internet_gateway" "main" {
+  vpc_id = "${aws_vpc.main.id}"
   tags = "${merge(
     local.common_tags,
     map(
@@ -27,8 +27,8 @@ resource "aws_internet_gateway" "igw" {
   )}"
 }
 
-resource "aws_route_table" "rtb" {
-  vpc_id = "${aws_vpc.vpc.id}"
+resource "aws_route_table" "main" {
+  vpc_id = "${aws_vpc.main.id}"
   tags = "${merge(
     local.common_tags,
     map(
@@ -37,14 +37,14 @@ resource "aws_route_table" "rtb" {
   )}"
 }
 
-resource "aws_route" "rt" {
-  route_table_id = "${aws_route_table.rtb.id}"
+resource "aws_route" "default" {
+  route_table_id = "${aws_route_table.main.id}"
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id = "${aws_internet_gateway.igw.id}"
+  gateway_id = "${aws_internet_gateway.main.id}"
 }
 
-resource "aws_subnet" "subnet1" {
-  vpc_id = "${aws_vpc.vpc.id}"
+resource "aws_subnet" "public-a" {
+  vpc_id = "${aws_vpc.main.id}"
   cidr_block = "${var.subnet1_cidr}"
   availability_zone = "${var.region}a"
   map_public_ip_on_launch = true
@@ -56,13 +56,13 @@ resource "aws_subnet" "subnet1" {
   )}"
 }
 
-resource "aws_route_table_association" "rtb-subnet1" {
-  subnet_id = "${aws_subnet.subnet1.id}"
-  route_table_id = "${aws_route_table.rtb.id}"
+resource "aws_route_table_association" "public-a" {
+  subnet_id = "${aws_subnet.public-a.id}"
+  route_table_id = "${aws_route_table.main.id}"
 }
 
-resource "aws_subnet" "subnet2" {
-  vpc_id = "${aws_vpc.vpc.id}"
+resource "aws_subnet" "public-b" {
+  vpc_id = "${aws_vpc.main.id}"
   cidr_block = "${var.subnet2_cidr}"
   availability_zone = "${var.region}b"
   map_public_ip_on_launch = true
@@ -74,12 +74,12 @@ resource "aws_subnet" "subnet2" {
   )}"
 }
 
-resource "aws_route_table_association" "rtb-subnet2" {
-  subnet_id = "${aws_subnet.subnet2.id}"
-  route_table_id = "${aws_route_table.rtb.id}"
+resource "aws_route_table_association" "public-b" {
+  subnet_id = "${aws_subnet.public-b.id}"
+  route_table_id = "${aws_route_table.main.id}"
 }
 
-resource "aws_key_pair" "keypair" {
+resource "aws_key_pair" "default" {
   key_name = "${var.project_name}-key"
   public_key = "${var.public_key}"
 }
@@ -118,7 +118,7 @@ resource "aws_key_pair" "keypair" {
 resource "aws_security_group" "ssh" {
   name        = "${var.project_name}-ssh-sg"
   description = "Allow SSH"
-  vpc_id      = "${aws_vpc.vpc.id}"
+  vpc_id      = "${aws_vpc.main.id}"
   ingress {
     from_port   = 22
     to_port     = 22
@@ -139,21 +139,71 @@ resource "aws_security_group" "ssh" {
   )}"
 }
 
-resource "aws_instance" "app1" {
+resource "aws_instance" "app" {
   # ami = "${data.aws_ami.debian.id}"
-  ami = "ami-0ad001cb48e7f2a56"
+  ami = "${local.ami}"
   instance_type = "t2.micro"
-  subnet_id = "${aws_subnet.subnet1.id}"
-  key_name = "${aws_key_pair.keypair.key_name}"
+  subnet_id = "${aws_subnet.public-a.id}"
+  key_name = "${aws_key_pair.default.key_name}"
   vpc_security_group_ids = ["${aws_security_group.ssh.id}"]
   tags = "${merge(
     local.common_tags,
     map(
-      "Name", "${var.project_name}-app1"
+      "Name", "${var.project_name}-app"
     )
   )}"
 }
 
-output "app1_public_ip" {
-  value = "${aws_instance.app1.public_ip}"
+resource "aws_instance" "db-master" {
+  # ami = "${data.aws_ami.debian.id}"
+  ami = "${local.ami}"
+  instance_type = "t2.micro"
+  subnet_id = "${aws_subnet.public-a.id}"
+  key_name = "${aws_key_pair.default.key_name}"
+  vpc_security_group_ids = ["${aws_security_group.ssh.id}"]
+  tags = "${merge(
+    local.common_tags,
+    map(
+      "Name", "${var.project_name}-db-master"
+    )
+  )}"
+}
+
+resource "aws_instance" "db-slave" {
+  # ami = "${data.aws_ami.debian.id}"
+  ami = "${local.ami}"
+  instance_type = "t2.micro"
+  subnet_id = "${aws_subnet.public-b.id}"
+  key_name = "${aws_key_pair.default.key_name}"
+  vpc_security_group_ids = ["${aws_security_group.ssh.id}"]
+  tags = "${merge(
+    local.common_tags,
+    map(
+      "Name", "${var.project_name}-db-slave"
+    )
+  )}"
+}
+
+output "app-public-ip" {
+  value = "${aws_instance.app.public_ip}"
+}
+
+output "db-master-public-ip" {
+  value = "${aws_instance.db-master.public_ip}"
+}
+
+output "db-slave-public-ip" {
+  value = "${aws_instance.db-slave.public_ip}"
+}
+
+output "app-private-ip" {
+  value = "${aws_instance.app.private_ip}"
+}
+
+output "db-master-private-ip" {
+  value = "${aws_instance.db-master.private_ip}"
+}
+
+output "db-slave-private-ip" {
+  value = "${aws_instance.db-slave.private_ip}"
 }
