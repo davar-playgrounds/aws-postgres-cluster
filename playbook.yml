@@ -1,5 +1,6 @@
 ---
 - hosts: localhost
+  gather_facts: no
   become: no
   roles:
     - gen_key_pair
@@ -9,3 +10,9 @@
   become: yes
   roles:
     - linux_pre
+
+- hosts: app
+  become: yes
+  roles:
+    - deploy_app
+    - { role: docker_compose, tpl_prefix: "app"}
