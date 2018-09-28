@@ -163,6 +163,30 @@ resource "aws_security_group" "app" {
   )}"
 }
 
+resource "aws_security_group" "db" {
+  name        = "${var.project_name}-db-sg"
+  description = "Open DB ports e.g. 5432"
+  vpc_id      = "${aws_vpc.main.id}"
+  ingress {
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "TCP"
+    cidr_blocks = ["${var.vpc_cidr}"]
+  }
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["${var.vpc_cidr}"]
+  }
+  tags = "${merge(
+    local.common_tags,
+    map(
+      "Name", "${var.project_name}-db-sg"
+    )
+  )}"
+}
+
 resource "aws_instance" "app" {
   # ami = "${data.aws_ami.debian.id}"
   ami = "${local.ami}"
@@ -184,7 +208,7 @@ resource "aws_instance" "db-master" {
   instance_type = "t2.micro"
   subnet_id = "${aws_subnet.public-a.id}"
   key_name = "${aws_key_pair.default.key_name}"
-  vpc_security_group_ids = ["${aws_security_group.ssh.id}"]
+  vpc_security_group_ids = ["${aws_security_group.ssh.id}", "${aws_security_group.db.id}"]
   tags = "${merge(
     local.common_tags,
     map(
@@ -199,7 +223,7 @@ resource "aws_instance" "db-slave" {
   instance_type = "t2.micro"
   subnet_id = "${aws_subnet.public-b.id}"
   key_name = "${aws_key_pair.default.key_name}"
-  vpc_security_group_ids = ["${aws_security_group.ssh.id}"]
+  vpc_security_group_ids = ["${aws_security_group.ssh.id}", "${aws_security_group.db.id}"]
   tags = "${merge(
     local.common_tags,
     map(
