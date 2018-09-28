@@ -4,7 +4,7 @@ host    all             all             ::1/128                 trust
 local   replication     all                                     trust
 host    replication     all             127.0.0.1/32            trust
 host    replication     all             ::1/128                 trust
-{% for host in groups['db-slave'] %}
+{% for host in groups['db-master'] %}
 host    replication     replicate       {{ hostvars[host].private_ip }}/32           trust
 {% endfor %}
 host all all all md5
