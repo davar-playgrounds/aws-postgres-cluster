@@ -1,3 +1,9 @@
+- name: "Wait for connection"
+  wait_for_connection:
+
+- name: "Gather facts"
+  setup:
+
 - name: "Update linux"
   package:
     name: "*"
