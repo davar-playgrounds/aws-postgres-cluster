@@ -26,12 +26,13 @@
 
 - hosts: db-master
   roles:
-    - pre_config_db_master
+    - { role: pre_config_db, tpl_prefix: "db-master"}
     - { role: docker_compose, tpl_prefix: "db-master"}
     - pos_config_db_master
 
 - hosts: db-slave
   roles:
+    - { role: pre_config_db, tpl_prefix: "db-slave"}
     - pre_config_db_slave
-    # - { role: docker_compose, tpl_prefix: "db-slave"}
+    - { role: docker_compose, tpl_prefix: "db-slave"}
     # - pos_config_db_slave
