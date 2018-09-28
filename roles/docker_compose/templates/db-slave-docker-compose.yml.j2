@@ -1,0 +1,13 @@
+version: '2.1'
+services:
+  pg_slave:
+    image: 'postgres:10-alpine'
+    container_name: pg_slave
+    restart: unless-stopped
+    command: ["-c", "config_file=/etc/postgresql/postgresql.conf"]
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./data:/var/lib/postgresql/data/
+      - ./postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./pg_hba.conf:/etc/postgresql/pg_hba.conf

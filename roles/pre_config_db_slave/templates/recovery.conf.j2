@@ -1,0 +1,5 @@
+standby_mode          = 'on'
+{% for host in groups['db-master'] %}
+primary_conninfo      = 'host={{ hostvars[host].private_ip }} port=5432 user=replicate'
+{% endfor %}
+trigger_file = '/tmp/MasterNow'

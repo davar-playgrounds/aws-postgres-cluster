@@ -1,5 +1,18 @@
-- name: "Create replicate role on postgres"
+- name: "Check if docker-compose/data/pg_replslot exist"
+  stat:
+    path: "docker-compose/data/pg_replslot"
+  register: pg_replslot_stat
+
+- name: "Postgres base backup from master"
   shell:
     cmd: "docker run -v ${PWD}/data:/var/lib/postgresql/data -u postgres --rm postgres:10-alpine pg_basebackup -h {{ hostvars[item].private_ip }} -D /var/lib/postgresql/data -P -U replicate --wal-method=stream"
     chdir: "docker-compose/"
   with_items: "{{ groups['db-master'] }}"
+  when: pg_replslot_stat.stat.exists == false
+
+- name: "Copy recovery.conf"
+  template:
+    src: "recovery.conf.j2"
+    dest: "docker-compose/data/recovery.conf"
+    owner: 70
+    group: 70
