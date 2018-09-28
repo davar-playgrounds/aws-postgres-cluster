@@ -1,8 +1,3 @@
-- name: "Make sure docker-compose dir exist"
-  file:
-    path: "docker-compose/"
-    state: "directory"
-
 - name: "Make sure nginx dir exist"
   file:
     path: "docker-compose/nginx/"

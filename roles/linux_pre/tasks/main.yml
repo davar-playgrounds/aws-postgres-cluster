@@ -44,3 +44,8 @@
     url: "https://github.com/docker/compose/releases/download/1.21.2/docker-compose-{{ ansible_facts['system'] }}-{{ ansible_facts['machine'] }}"
     dest: /usr/local/bin/docker-compose
     mode: 0755
+
+- name: "Make sure docker-compose dir exist"
+  file:
+    path: "docker-compose/"
+    state: "directory"
