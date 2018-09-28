@@ -1,4 +1,4 @@
-- name: "Copy postgresql conf"
+- name: "Copy postgresql.conf"
   template:
     src: "{{ tpl_prefix }}-postgresql.conf.j2"
     dest: "docker-compose/postgresql.conf"
