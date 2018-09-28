@@ -35,4 +35,3 @@
     - { role: pre_config_db, tpl_prefix: "db-slave"}
     - pre_config_db_slave
     - { role: docker_compose, tpl_prefix: "db-slave"}
-    # - pos_config_db_slave
