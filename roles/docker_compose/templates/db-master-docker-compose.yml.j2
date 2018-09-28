@@ -12,5 +12,5 @@ services:
       - ./postgresql.conf:/etc/postgresql/postgresql.conf
       - ./pg_hba.conf:/etc/postgresql/pg_hba.conf
     environment:
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=pgcls
+      - POSTGRES_PASSWORD={{ db_password }}
+      - POSTGRES_DB={{ db_name }}

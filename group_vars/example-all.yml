@@ -6,3 +6,5 @@ project_name: aws-pg-cls
 vpc_cidr: 10.10.0.0/16
 subnet1_cidr: 10.10.0.0/24
 subnet2_cidr: 10.10.1.0/24
+db_password: password
+db_name: pgcls
