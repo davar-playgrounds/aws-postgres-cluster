@@ -1,4 +1,4 @@
 - name: "Create replicate role on postgres"
   shell:
-    cmd: "docker exec -u postgres -it pg_master psql -c 'CREATE ROLE replicate WITH REPLICATION LOGIN ;'"
+    cmd: "docker exec -u postgres pg_master psql -c 'CREATE ROLE replicate WITH REPLICATION LOGIN ;'"
     chdir: "docker-compose/"
