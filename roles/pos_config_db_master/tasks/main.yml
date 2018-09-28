@@ -2,3 +2,4 @@
   shell:
     cmd: "docker exec -u postgres pg_master psql -c 'CREATE ROLE replicate WITH REPLICATION LOGIN ;'"
     chdir: "docker-compose/"
+  ignore_errors: true
