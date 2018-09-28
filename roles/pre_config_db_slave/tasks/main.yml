@@ -1,0 +1,5 @@
+- name: "Create replicate role on postgres"
+  shell:
+    cmd: "docker run -v ${PWD}/data:/var/lib/postgresql/data -u postgres --rm -it postgres:10-alpine pg_basebackup -h {{ hostvars[item].private_ip }} -D /var/lib/postgresql/data -P -U replicate --wal-method=stream"
+    chdir: "docker-compose/"
+  with_items: "{{ groups['db-master'] }}"
