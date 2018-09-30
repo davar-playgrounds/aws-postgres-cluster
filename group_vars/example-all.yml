@@ -9,3 +9,8 @@ subnet2_cidr: 10.10.1.0/24
 db_username: postgres
 db_password: password
 db_name: pgcls
+email_host: smtp.mailtrap.io
+email_host_user: user
+email_host_password: password
+email_port: 2525
+email_default_sender: blacklist@paxful.test
