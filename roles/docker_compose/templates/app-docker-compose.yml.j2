@@ -35,7 +35,7 @@ services:
     networks:
       backend:
     environment:
-      - NETWORK_ACL_ID={{ vpc-default-network-acl-id }}
+      - NETWORK_ACL_ID={{ vpc_default_network_acl_id }}
       - AWS_ACCESS_KEY={{ aws_access_key }}
       - AWS_SECRET_KEY='{{ aws_secret_key }}'
       - REGION={{ region }}

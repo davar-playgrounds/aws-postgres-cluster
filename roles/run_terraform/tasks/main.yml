@@ -19,11 +19,8 @@
     hostname: "{{ item['hostname'] }}"
     groups: "{{ item['groups'] }}"
     private_ip: "{{ item['private_ip'] }}"
+    vpc_default_network_acl_id: "{{ terraform_output['outputs']['vpc-default-network-acl-id']['value'] }}"
   with_items:
     - { hostname: "{{ terraform_output['outputs']['app-public-ip']['value'] }}", private_ip: "{{ terraform_output['outputs']['app-private-ip']['value'] }}", groups: "app" }
     - { hostname: "{{ terraform_output['outputs']['db-master-public-ip']['value'] }}", private_ip: "{{ terraform_output['outputs']['db-master-private-ip']['value'] }}", groups: "db-master" }
     - { hostname: "{{ terraform_output['outputs']['db-slave-public-ip']['value'] }}", private_ip: "{{ terraform_output['outputs']['db-slave-private-ip']['value'] }}", groups: "db-slave" }
-
-- name: "Save a network acl id"
-  set_fact:
-    vpc-default-network-acl-id: "{{ terraform_output['outputs']['vpc-default-network-acl-id']['value'] }}"
