@@ -31,4 +31,4 @@
 - name: "Copy Dockerfile"
   template:
     src: "Dockerfile.j2"
-    dest: "docker-compose/blacklisted/Dockerfile.py"
+    dest: "docker-compose/blacklisted/Dockerfile"

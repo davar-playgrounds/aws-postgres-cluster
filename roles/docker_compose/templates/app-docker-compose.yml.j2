@@ -39,9 +39,9 @@ services:
       - AWS_ACCESS_KEY={{ aws_access_key }}
       - AWS_SECRET_KEY='{{ aws_secret_key }}'
       - REGION={{ region }}
-      {% for host in groups['db-master'] %}
+{% for host in groups['db-master'] %}
       - DB_HOST={{ hostvars[host].private_ip }}
-      {% endfor %}
+{% endfor %}
       - DB_USER={{ db_username }}
       - DB_PASSWORD={{ db_password }}
       - DB_NAME={{ db_name }}
