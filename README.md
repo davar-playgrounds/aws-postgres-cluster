@@ -29,3 +29,5 @@ dyego@ubuntu:~$ source ~/python3-ansible/bin/activate
 - [Terraform - Fix a wrong parameter which forces a instance recreation](https://github.com/hashicorp/terraform/issues/13749)
 - [Ansible - Manages a Terraform deployment (and plans)](https://docs.ansible.com/ansible/devel/modules/terraform_module.html)
 - [Postgres - Master/Slave](https://blog.raveland.org/post/postgresql_sr/)
+- [Python - Flask + SQLAlchemy](http://blog.sahildiwan.com/posts/flask-and-postgresql-app-deployed-on-heroku/)
+- [Python - Flask-Boto3](https://github.com/Ketouem/flask-boto3)
