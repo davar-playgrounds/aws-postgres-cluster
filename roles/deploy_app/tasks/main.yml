@@ -5,7 +5,7 @@
 
 - name: "Copy nginx conf"
   template:
-    src: "default.conf.j2"
+    src: "default.conf"
     dest: "docker-compose/nginx/default.conf"
 
 - name: "Make sure app dir exist"
@@ -15,7 +15,7 @@
 
 - name: "Copy index.php"
   template:
-    src: "index.php.j2"
+    src: "index.php"
     dest: "docker-compose/app/index.php"
 
 - name: "Make sure blacklisted dir exist"
@@ -25,10 +25,15 @@
 
 - name: "Copy app.py"
   template:
-    src: "app.py.j2"
+    src: "app.py"
     dest: "docker-compose/blacklisted/app.py"
 
 - name: "Copy Dockerfile"
   template:
-    src: "Dockerfile.j2"
+    src: "Dockerfile"
     dest: "docker-compose/blacklisted/Dockerfile"
+
+- name: "Copy requirements.txt"
+  template:
+    src: "requirements.txt"
+    dest: "docker-compose/blacklisted/requirements.txt"

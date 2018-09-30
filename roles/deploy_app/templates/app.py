@@ -1,24 +1,33 @@
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_boto3 import Boto3
+from flask_mail import Mail, Message
 from datetime import datetime
 from os import environ
 
 app = Flask(__name__)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://{db_user}:{db_password}@{db_host}:5432/{db_name}".format(
-    db_user=environ.get("DB_USER", "postgres"),
-    db_password=environ.get("DB_PASSWORD", "password"),
-    db_host=environ.get("DB_HOST", "127.0.0.1"),
-    db_name=environ.get("DB_NAME", "postgres")
+    db_user=environ.get("DB_USER"),
+    db_password=environ.get("DB_PASSWORD"),
+    db_host=environ.get("DB_HOST"),
+    db_name=environ.get("DB_NAME")
 )
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+db = SQLAlchemy(app)
+
 app.config["BOTO3_ACCESS_KEY"] = environ.get("AWS_ACCESS_KEY")
 app.config["BOTO3_SECRET_KEY"] = environ.get("AWS_SECRET_KEY")
-app.config["BOTO3_REGION"] = environ.get("REGION", "us-east-1")
+app.config["BOTO3_REGION"] = environ.get("REGION")
 app.config["BOTO3_SERVICES"] = ["ec2"]
-db = SQLAlchemy(app)
 boto_flask = Boto3(app)
+
+app.config["MAIL_SERVER"] = environ.get("EMAIL_HOST")
+app.config["MAIL_USERNAME"] = environ.get("EMAIL_HOST_USER")
+app.config["MAIL_PASSWORD"] = environ.get("EMAIL_HOST_PASSWORD")
+app.config["MAIL_PORT"] = environ.get("EMAIL_PORT")
+app.config["MAIL_DEFAULT_SENDER"] = environ.get("EMAIL_DEFAULT_SENDER")
+mail = Mail(app)
 
 
 class Blacklist(db.Model):
@@ -86,14 +95,16 @@ def blacklist():
             RuleAction="deny",
             RuleNumber=rule_number
         )
-
-    return "Path: {path}<br>IP Address: {ip_address}<br>Access Datetime: {access_datetime}<br>Blocked!".format(
+    msg_body = "Path: {path}<br>IP Address: {ip_address}<br>Access Datetime: {access_datetime}<br>Blocked!".format(
         path=path,
         ip_address=ip_address,
         access_datetime=access_datetime
     )
+    msg = Message("IP Blocked", recipients=["test@domain.com"], body=msg_body)
+    mail.send(msg)
+    return msg_body
 
 
 if __name__ == "__main__":
     db.create_all()
-    app.run(host="0.0.0.0")
+    app.run(host="0.0.0.0", debug=True)
