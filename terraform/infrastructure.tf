@@ -255,3 +255,7 @@ output "db-master-private-ip" {
 output "db-slave-private-ip" {
   value = "${aws_instance.db-slave.private_ip}"
 }
+
+output "vpc-default-network-acl-id" {
+  value = "${aws_vpc.main.default_network_acl_id}"
+}
