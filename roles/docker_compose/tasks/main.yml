@@ -5,5 +5,5 @@
 
 - name: "Execute docker-compose"
   shell:
-    cmd: "docker-compose up -d"
+    cmd: "docker-compose up -d --force-recreate"
     chdir: "docker-compose/"
