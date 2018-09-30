@@ -20,7 +20,8 @@ dyego@ubuntu:~$ source ~/python3-ansible/bin/activate
 ## Improvements
 
 - This playbook covers only Debian distribution, using module apt only, for example. It should be improved to cover other distributions.
-- Avoid to include more than one master on `roles/pre_config_db/templates/*-pg_hba.conf.j2`, `roles/pre_config_db_slave/templates/recovery.conf.j2` and `roles/pre_config_db_slave/tasks/main.yml`
+- Avoid to include more than one master on `roles/pre_config_db/templates/*-pg_hba.conf.j2`, `roles/pre_config_db_slave/templates/recovery.conf.j2` and `roles/pre_config_db_slave/tasks/main.yml`.
+- Check if the docker-composer was run before and restart if necessary.
 
 ## References
 
