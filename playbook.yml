@@ -1,0 +1,37 @@
+---
+- hosts: localhost
+  gather_facts: no
+  roles:
+    - gen_key_pair
+    - run_terraform
+
+- hosts: ec2
+  gather_facts: no
+  roles:
+    - linux_pre
+
+- hosts: app
+  roles:
+    - deploy_app
+    - { role: docker_compose, tpl_prefix: "app"}
+
+- hosts: db
+  tasks:
+    - name: "Make sure data dir exist"
+      file:
+        path: "docker-compose/data/"
+        state: "directory"
+        owner: 70
+        group: 70
+
+- hosts: db-master
+  roles:
+    - { role: pre_config_db, tpl_prefix: "db-master"}
+    - { role: docker_compose, tpl_prefix: "db-master"}
+    - pos_config_db_master
+
+- hosts: db-slave
+  roles:
+    - { role: pre_config_db, tpl_prefix: "db-slave"}
+    - pre_config_db_slave
+    - { role: docker_compose, tpl_prefix: "db-slave"}

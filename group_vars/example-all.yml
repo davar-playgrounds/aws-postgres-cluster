@@ -1,0 +1,16 @@
+---
+aws_access_key: put-here-your-access-key
+aws_secret_key: put-here-your-secret-key
+region: us-east-1
+project_name: aws-pg-cls
+vpc_cidr: 10.10.0.0/16
+subnet1_cidr: 10.10.0.0/24
+subnet2_cidr: 10.10.1.0/24
+db_username: postgres
+db_password: password
+db_name: pgcls
+email_host: smtp.mailtrap.io
+email_host_user: user
+email_host_password: password
+email_port: 2525
+email_default_sender: blacklist@paxful.test

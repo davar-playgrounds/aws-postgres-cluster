@@ -1,0 +1,39 @@
+- name: "Make sure nginx dir exist"
+  file:
+    path: "docker-compose/nginx/"
+    state: "directory"
+
+- name: "Copy nginx conf"
+  template:
+    src: "default.conf"
+    dest: "docker-compose/nginx/default.conf"
+
+- name: "Make sure app dir exist"
+  file:
+    path: "docker-compose/app/"
+    state: "directory"
+
+- name: "Copy index.php"
+  template:
+    src: "index.php"
+    dest: "docker-compose/app/index.php"
+
+- name: "Make sure blacklisted dir exist"
+  file:
+    path: "docker-compose/blacklisted/"
+    state: "directory"
+
+- name: "Copy app.py"
+  template:
+    src: "app.py"
+    dest: "docker-compose/blacklisted/app.py"
+
+- name: "Copy Dockerfile"
+  template:
+    src: "Dockerfile"
+    dest: "docker-compose/blacklisted/Dockerfile"
+
+- name: "Copy requirements.txt"
+  template:
+    src: "requirements.txt"
+    dest: "docker-compose/blacklisted/requirements.txt"

@@ -1,0 +1,19 @@
+# ide directories
+.idea/
+.vscode/
+
+# ansible retry files
+*.retry
+# sensible files and directories
+group_vars/all.yml
+files/
+
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# Crash log files
+crash.log

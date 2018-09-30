@@ -1,0 +1,9 @@
+- name: "Copy postgresql.conf"
+  template:
+    src: "{{ tpl_prefix }}-postgresql.conf.j2"
+    dest: "docker-compose/postgresql.conf"
+
+- name: "Copy pg_hba.conf"
+  template:
+    src: "{{ tpl_prefix }}-pg_hba.conf.j2"
+    dest: "docker-compose/pg_hba.conf"

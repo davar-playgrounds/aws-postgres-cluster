@@ -1,0 +1,51 @@
+- name: "Wait for connection"
+  wait_for_connection:
+
+- name: "Gather facts"
+  setup:
+
+- name: "Update linux"
+  package:
+    name: "*"
+    state: "latest"
+    force_apt_get: True
+
+- name: "Install required packages"
+  package:
+    name: "{{ item }}"
+    state: "latest"
+    force_apt_get: True
+  with_items:
+    - "apt-transport-https"
+    - "ca-certificates"
+    - "curl"
+    - "gnupg2"
+    - "software-properties-common"
+    - "python-docker"
+
+- name: "Add docker-ce apt signing key"
+  apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+
+- name: "Add docker-ce repository"
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_facts['lsb']['codename'] }} stable"
+    state: present
+
+- name: "Install docker-ce package"
+  package:
+    name: "docker-ce"
+    state: "latest"
+    force_apt_get: True
+
+- name: "Install docker-compose"
+  get_url:
+    url: "https://github.com/docker/compose/releases/download/1.21.2/docker-compose-{{ ansible_facts['system'] }}-{{ ansible_facts['machine'] }}"
+    dest: /usr/local/bin/docker-compose
+    mode: 0755
+
+- name: "Make sure docker-compose dir exist"
+  file:
+    path: "docker-compose/"
+    state: "directory"
