@@ -8,6 +8,7 @@ services:
       - '80:80'
     links:
       - php-fpm
+      - blacklisted
     volumes:
       - ./app:/app
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
@@ -23,6 +24,27 @@ services:
       - ./app:/app
     networks:
       backend:
+
+  blacklisted:
+    build: ./blacklisted
+    container_name: blacklisted
+    restart: unless-stopped
+    command: /blacklisted/app.py
+    volumes:
+      - ./blacklisted:/blacklisted
+    networks:
+      backend:
+    environment:
+      - NETWORK_ACL_ID={{ vpc-default-network-acl-id }}
+      - AWS_ACCESS_KEY={{ aws_access_key }}
+      - AWS_SECRET_KEY='{{ aws_secret_key }}'
+      - REGION={{ region }}
+      {% for host in groups['db-master'] %}
+      - DB_HOST={{ hostvars[host].private_ip }}
+      {% endfor %}
+      - DB_USER={{ db_username }}
+      - DB_PASSWORD={{ db_password }}
+      - DB_NAME={{ db_name }}
 
 networks:
   internet:

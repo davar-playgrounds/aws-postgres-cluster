@@ -17,3 +17,18 @@
   template:
     src: "index.php.j2"
     dest: "docker-compose/app/index.php"
+
+- name: "Make sure blacklisted dir exist"
+  file:
+    path: "docker-compose/blacklisted/"
+    state: "directory"
+
+- name: "Copy app.py"
+  template:
+    src: "app.py.j2"
+    dest: "docker-compose/blacklisted/app.py"
+
+- name: "Copy Dockerfile"
+  template:
+    src: "Dockerfile.j2"
+    dest: "docker-compose/blacklisted/Dockerfile.py"
