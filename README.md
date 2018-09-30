@@ -32,3 +32,4 @@ dyego@ubuntu:~$ source ~/python3-ansible/bin/activate
 - [Postgres - Master/Slave](https://blog.raveland.org/post/postgresql_sr/)
 - [Python - Flask + SQLAlchemy](http://blog.sahildiwan.com/posts/flask-and-postgresql-app-deployed-on-heroku/)
 - [Python - Flask-Boto3](https://github.com/Ketouem/flask-boto3)
+- [Python - Flask-Mail](https://pythonhosted.org/Flask-Mail/)
