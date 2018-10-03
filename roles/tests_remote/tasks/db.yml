@@ -1,0 +1,85 @@
+---
+- name: "List postgres databases on master"
+  shell: "docker exec -u postgres pg_master psql --list"
+  register: test_result
+  when: inventory_hostname in groups['db-master']
+
+- name: "Write test logs"
+  write_test_logs:
+    description: "List postgres databases on master."
+    log_file: "{{ log_file }}"
+    log_dir: "{{ log_dir }}"
+    host: "{{ inventory_hostname }}"
+    input: "{{ test_result }}"
+    type: "database"
+  delegate_to: localhost
+  become: false
+  when: inventory_hostname in groups['db-master']
+
+- name: "List postgres databases on slave"
+  shell: "docker exec -u postgres pg_slave psql --list"
+  register: test_result
+  when: inventory_hostname in groups['db-slave']
+
+- name: "Write test logs"
+  write_test_logs:
+    description: "List postgres databases on slave."
+    log_file: "{{ log_file }}"
+    log_dir: "{{ log_dir }}"
+    host: "{{ inventory_hostname }}"
+    input: "{{ test_result }}"
+    type: "database"
+  delegate_to: localhost
+  become: false
+  when: inventory_hostname in groups['db-slave']
+
+- name: "Create database on master"
+  shell: "docker exec -u postgres pg_master createdb {{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
+  register: test_result
+  when: inventory_hostname in groups['db-master']
+
+- name: "Write test logs"
+  write_test_logs:
+    description: "Create database on master."
+    log_file: "{{ log_file }}"
+    log_dir: "{{ log_dir }}"
+    host: "{{ inventory_hostname }}"
+    input: "{{ test_result }}"
+    type: "database"
+  delegate_to: localhost
+  become: false
+  when: inventory_hostname in groups['db-master']
+
+- name: "List postgres databases >>again<< on master to check if the database created on master was replicated"
+  shell: "docker exec -u postgres pg_master psql --list"
+  register: test_result
+  when: inventory_hostname in groups['db-master']
+
+- name: "Write test logs"
+  write_test_logs:
+    description: "List postgres databases >>again<< on master to check if the database created on master was replicated."
+    log_file: "{{ log_file }}"
+    log_dir: "{{ log_dir }}"
+    host: "{{ inventory_hostname }}"
+    input: "{{ test_result }}"
+    type: "database"
+  delegate_to: localhost
+  become: false
+  when: inventory_hostname in groups['db-master']
+
+- name: "List postgres databases >>again<< on slave to check if the database created on master was replicated"
+  shell: "docker exec -u postgres pg_slave psql --list"
+  register: test_result
+  when: inventory_hostname in groups['db-slave']
+
+- name: "Write test logs"
+  write_test_logs:
+    description: "List postgres databases >>again<< on slave to check if the database created on master was replicated."
+    log_file: "{{ log_file }}"
+    log_dir: "{{ log_dir }}"
+    host: "{{ inventory_hostname }}"
+    input: "{{ test_result }}"
+    type: "database"
+  delegate_to: localhost
+  become: false
+  when: inventory_hostname in groups['db-slave']
