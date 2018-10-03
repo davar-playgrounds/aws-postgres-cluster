@@ -1,0 +1,40 @@
+---
+- name: "Access /blacklisted URI to block the access to port 80"
+  uri:
+    url: "http://{{ item }}/blacklisted"
+    return_content: true
+    timeout: 10
+  with_items: "{{ groups['app'] }}"
+  ignore_errors: true
+  register: test_result
+
+- name: "Write test logs"
+  write_test_logs:
+    description: "Access /blacklisted URI to block the access to port 80."
+    log_file: "{{ log_file }}"
+    log_dir: "{{ log_dir }}"
+    host: "{{ ansible_host }}"
+    input: "{{ test_result }}"
+    type: "uri"
+
+- name: "Wait after request Fibonacci again"
+  pause:
+    seconds: 10
+
+- name: "Try to access Fibonacci again to confirm that our IP was blocked"
+  uri:
+    url: "http://{{ item }}/?n=5"
+    return_content: true
+    timeout: 10
+  with_items: "{{ groups['app'] }}"
+  ignore_errors: true
+  register: test_result
+
+- name: "Write test logs"
+  write_test_logs:
+    description: "Try to access Fibonacci again to confirm that our IP was blocked."
+    log_file: "{{ log_file }}"
+    log_dir: "{{ log_dir }}"
+    host: "{{ ansible_host }}"
+    input: "{{ test_result }}"
+    type: "uri"
