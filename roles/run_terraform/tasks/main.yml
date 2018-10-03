@@ -1,3 +1,4 @@
+---
 - name: "Execute terraform to create infrastructure"
   terraform:
     project_path: "{{ playbook_dir }}/terraform/"
@@ -11,7 +12,7 @@
       vpc_cidr: "{{ vpc_cidr }}"
       subnet1_cidr: "{{ subnet1_cidr }}"
       subnet2_cidr: "{{ subnet2_cidr }}"
-    force_init: yes
+    force_init: true
   register: terraform_output
 
 - name: "Add EC2 instances to the inventory in runtime"

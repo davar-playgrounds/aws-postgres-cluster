@@ -1,3 +1,4 @@
+---
 - name: "Make sure files dir exist"
   file:
     path: "{{ playbook_dir }}/files/"

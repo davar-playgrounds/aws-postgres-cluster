@@ -1,3 +1,4 @@
+---
 - name: "Make sure nginx dir exist"
   file:
     path: "docker-compose/nginx/"
