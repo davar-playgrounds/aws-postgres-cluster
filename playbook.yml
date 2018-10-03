@@ -5,36 +5,36 @@
     - gen_key_pair
     - run_terraform
 
-# - hosts: ec2
-#   gather_facts: no
-#   roles:
-#     - linux_pre
+- hosts: ec2
+  gather_facts: no
+  roles:
+    - linux_pre
 
-# - hosts: app
-#   roles:
-#     - deploy_app
-#     - { role: docker_compose, tpl_prefix: "app"}
+- hosts: app
+  roles:
+    - deploy_app
+    - { role: docker_compose, tpl_prefix: "app"}
 
-# - hosts: db
-#   tasks:
-#     - name: "Make sure data dir exist"
-#       file:
-#         path: "docker-compose/data/"
-#         state: "directory"
-#         owner: 70
-#         group: 70
+- hosts: db
+  tasks:
+    - name: "Make sure data dir exist"
+      file:
+        path: "docker-compose/data/"
+        state: "directory"
+        owner: 70
+        group: 70
 
-# - hosts: db-master
-#   roles:
-#     - { role: pre_config_db, tpl_prefix: "db-master"}
-#     - { role: docker_compose, tpl_prefix: "db-master"}
-#     - pos_config_db_master
+- hosts: db-master
+  roles:
+    - { role: pre_config_db, tpl_prefix: "db-master"}
+    - { role: docker_compose, tpl_prefix: "db-master"}
+    - pos_config_db_master
 
-# - hosts: db-slave
-#   roles:
-#     - { role: pre_config_db, tpl_prefix: "db-slave"}
-#     - pre_config_db_slave
-#     - { role: docker_compose, tpl_prefix: "db-slave"}
+- hosts: db-slave
+  roles:
+    - { role: pre_config_db, tpl_prefix: "db-slave"}
+    - pre_config_db_slave
+    - { role: docker_compose, tpl_prefix: "db-slave"}
 
 - hosts: ec2
   gather_facts: no
@@ -45,3 +45,18 @@
   gather_facts: no
   roles:
     - tests_from_localhost
+
+- hosts: app
+  tasks:
+  - debug:
+      msg: "APP SERVER: {{ inventory_hostname }}"
+
+- hosts: db-master
+  tasks:
+  - debug:
+      msg: "DB MASTER SERVER: {{ inventory_hostname }}"
+
+- hosts: db-slave
+  tasks:
+  - debug:
+      msg: "DB SLAVE SERVER: {{ inventory_hostname }}"
