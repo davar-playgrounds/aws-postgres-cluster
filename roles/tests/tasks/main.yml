@@ -1,6 +1,0 @@
----
-- import_tasks: fibonacci.yml
-  when: execute_context == 'local'
-
-- import_tasks: blacklisted.yml
-  when: execute_context == 'local'
