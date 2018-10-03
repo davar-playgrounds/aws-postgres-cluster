@@ -55,3 +55,23 @@
     type: "database"
   delegate_to: localhost
   become: false
+
+- name: "List network acl ingress rules"
+  ec2_vpc_nacl_facts:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ region }}"
+    nacl_ids:
+      - "{{ terraform_output['outputs']['vpc-default-network-acl-id']['value'] }}"
+  register: test_result
+
+- name: "Write test logs"
+  write_test_logs:
+    description: "List network acl ingress rules."
+    log_file: "{{ log_file }}"
+    log_dir: "{{ log_dir }}"
+    host: "{{ inventory_hostname }}"
+    input: "{{ test_result }}"
+    type: "nacl"
+  delegate_to: localhost
+  become: false
