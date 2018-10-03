@@ -38,3 +38,20 @@
     host: "{{ ansible_host }}"
     input: "{{ test_result }}"
     type: "uri"
+
+- name: "List postgres databases on master"
+  shell: "docker exec -u postgres pg_master psql -c 'select id,path,ip_address,access_datetime from blacklist' {{ db_name }} {{ db_username }}"
+  register: test_result
+  delegate_to: "{{ item }}"
+  with_items: "{{ groups['db-master'] }}"
+
+- name: "Write test logs"
+  write_test_logs:
+    description: "List postgres databases on master."
+    log_file: "{{ log_file }}"
+    log_dir: "{{ log_dir }}"
+    host: "{{ inventory_hostname }}"
+    input: "{{ test_result['results'][0] }}"
+    type: "database"
+  delegate_to: localhost
+  become: false
