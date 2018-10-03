@@ -79,7 +79,7 @@ class WriteTestsLogs:
         if not self._input['stderr'] == "":
             self._lines.append("Output: {0}".format(self._input['stderr']))
         if not self._input['stdout'] == "":
-            self._lines.append("Output: {0}".format(self._input['stdout']))
+            self._lines.append("Output:\n{0}".format(self._input['stdout']))
         self._write_file()
         return _changed, self._lines
 
@@ -89,7 +89,7 @@ class WriteTestsLogs:
         if not self._input['stderr'] == "":
             self._lines.append("Output: {0}".format(self._input['stderr']))
         if not self._input['stdout'] == "":
-            self._lines.append("Output: {0}".format(self._input['stdout']))
+            self._lines.append("Output:\n{0}".format(self._input['stdout']))
         self._write_file()
         return _changed, self._lines
 
