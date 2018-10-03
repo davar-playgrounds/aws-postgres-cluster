@@ -1,3 +1,4 @@
+---
 - name: "Wait for connection"
   wait_for_connection:
 
@@ -7,14 +8,14 @@
 - name: "Update linux"
   package:
     name: "*"
-    state: "latest"
-    force_apt_get: True
+    state: "present"
+    force_apt_get: true
 
 - name: "Install required packages"
   package:
     name: "{{ item }}"
-    state: "latest"
-    force_apt_get: True
+    state: "present"
+    force_apt_get: true
   with_items:
     - "apt-transport-https"
     - "ca-certificates"
@@ -36,8 +37,8 @@
 - name: "Install docker-ce package"
   package:
     name: "docker-ce"
-    state: "latest"
-    force_apt_get: True
+    state: "present"
+    force_apt_get: true
 
 - name: "Ensure docker service is started and enabled"
   service:

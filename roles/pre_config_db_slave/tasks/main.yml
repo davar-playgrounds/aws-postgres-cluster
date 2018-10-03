@@ -1,3 +1,4 @@
+---
 - name: "Check if docker-compose/data/pg_replslot exist"
   stat:
     path: "docker-compose/data/pg_replslot"

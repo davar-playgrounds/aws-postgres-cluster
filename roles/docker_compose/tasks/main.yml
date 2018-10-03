@@ -1,3 +1,4 @@
+---
 - name: "Copy docker-compose"
   template:
     src: "{{ tpl_prefix }}-docker-compose.yml.j2"
