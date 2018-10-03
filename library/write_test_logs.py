@@ -10,7 +10,7 @@ __author__ = "Dyego Eugenio"
 __copyright__ = "Copyleft with your own risk"
 __credits__ = ["Dyego Eugenio"]
 __license__ = "GPL"
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 __maintainer__ = "Dyego Eugenio"
 __email__ = "dyegoe@gmail.com"
 __status__ = "Production"
@@ -31,7 +31,7 @@ EXAMPLES = '''
         log_dir: /any/absolut/path/to/save/your/logs
         log_file: tests.log
         input: any_registered_var_from_previous_command
-        type: database | docker | uri
+        type: database | docker | uri | nacl
         
 '''
 
@@ -50,7 +50,7 @@ class WriteTestsLogs:
             "host": {"required": True, "type": "str"},
             "type": {
                 "required": True,
-                "choices": ['database', 'docker', 'uri'],
+                "choices": ['database', 'docker', 'uri', 'nacl'],
                 "type": 'str'
             },
         }
@@ -66,7 +66,8 @@ class WriteTestsLogs:
         choice_map = {
             "database": self._log_database,
             "docker": self._log_docker,
-            "uri": self._log_uri
+            "uri": self._log_uri,
+            "nacl": self._log_nacl
         }
         self._lines.append("Hostname: {0}".format(self._host))
         self._lines.append("Description: {0}".format(self._description))
@@ -108,6 +109,23 @@ class WriteTestsLogs:
             if 'content' in self._input:
                 if not self._input['content'] == "":
                     self._lines.append("Content: {0}".format(self._input['content'].rstrip()))
+
+        self._write_file()
+        return _changed, self._lines
+
+    def _log_nacl(self):
+        _changed = False
+        if 'nacls' in self._input:
+            if len(self._input['nacls']) > 0:
+                for _nacl in self._input['nacls']:
+                    self._lines.append("NACL ID: {0}".format(_nacl['nacl_id']))
+                    for _ingress in _nacl['ingress']:
+                        self._lines.append("RULE {0}: {1} | {2} | {3} | {4} | {5} | {6} | {7}".format(
+                            _ingress[0], _ingress[1], _ingress[2], _ingress[3],
+                            _ingress[4], _ingress[5], _ingress[6], _ingress[7]
+                        ))
+        else:
+            self._lines.append("NACL ID: Not found")
 
         self._write_file()
         return _changed, self._lines
