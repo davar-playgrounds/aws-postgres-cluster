@@ -1,4 +1,20 @@
 ---
+- name: "Request 5 Fibonacci numbers"
+  uri:
+    url: "http://{{ item }}/?n=5"
+    return_content: yes
+  with_items: "{{ groups['app'] }}"
+  ignore_errors: true
+  register: test_result
+
+- name: "Write test logs"
+  write_test_logs:
+    description: "Request 5 Fibonacci numbers."
+    log_file: "{{ log_file }}"
+    log_dir: "{{ log_dir }}"
+    host: "{{ ansible_host }}"
+    input: "{{ test_result }}"
+    type: "uri"
 - name: "Request 10 Fibonacci numbers"
   uri:
     url: "http://{{ item }}/?n=10"
