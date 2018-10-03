@@ -1,6 +1,7 @@
 # ide directories
 .idea/
 .vscode/
+logs/
 
 # ansible retry files
 *.retry
