@@ -14,3 +14,5 @@ email_host_user: user
 email_host_password: password
 email_port: 2525
 email_default_sender: blacklist@paxful.test
+log_dir: "{{ playbook_dir }}/logs/"
+log_file: "tests_result.log"
