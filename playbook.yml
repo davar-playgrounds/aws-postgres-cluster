@@ -36,7 +36,12 @@
 #     - pre_config_db_slave
 #     - { role: docker_compose, tpl_prefix: "db-slave"}
 
+- hosts: ec2
+  gather_facts: no
+  roles:
+    - { role: tests, execute_context: "remote"}
+
 - hosts: localhost
   gather_facts: no
   roles:
-    - tests
+    - { role: tests, execute_context: "local"}
