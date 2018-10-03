@@ -35,3 +35,23 @@
     - { role: pre_config_db, tpl_prefix: "db-slave"}
     - pre_config_db_slave
     - { role: docker_compose, tpl_prefix: "db-slave"}
+
+- hosts: ec2
+  gather_facts: no
+  roles:
+    - tests_remote
+
+- hosts: localhost
+  gather_facts: no
+  roles:
+    - tests_from_localhost
+
+- hosts: localhost
+  gather_facts: no
+  tasks:
+  - debug:
+      msg:
+        - "{% for host in groups['app'] %}[APP SERVER] {{ host }} private_ip: {{ hostvars[host].private_ip }}{% endfor %}"
+        - "{% for host in groups['db-master'] %}[DB-MASTER SERVER] {{ host }} private_ip: {{ hostvars[host].private_ip }}{% endfor %}"
+        - "{% for host in groups['db-slave'] %}[DB-SLAVE SERVER] {{ host }} private_ip: {{ hostvars[host].private_ip }}{% endfor %}"
+        - "You can find logs with the test results on {{ playbook_dir }}/logs/"

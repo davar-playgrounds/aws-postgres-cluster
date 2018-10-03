@@ -1,0 +1,77 @@
+---
+- name: "Access /blacklisted URI to block the access to port 80"
+  uri:
+    url: "http://{{ item }}/blacklisted"
+    return_content: true
+    timeout: 10
+  with_items: "{{ groups['app'] }}"
+  ignore_errors: true
+  register: test_result
+
+- name: "Write test logs"
+  write_test_logs:
+    description: "Access /blacklisted URI to block the access to port 80."
+    log_file: "{{ log_file }}"
+    log_dir: "{{ log_dir }}"
+    host: "{{ ansible_host }}"
+    input: "{{ test_result }}"
+    type: "uri"
+
+- name: "Wait after request Fibonacci again"
+  pause:
+    seconds: 10
+
+- name: "Try to access Fibonacci again to confirm that our IP was blocked"
+  uri:
+    url: "http://{{ item }}/?n=5"
+    return_content: true
+    timeout: 10
+  with_items: "{{ groups['app'] }}"
+  ignore_errors: true
+  register: test_result
+
+- name: "Write test logs"
+  write_test_logs:
+    description: "Try to access Fibonacci again to confirm that our IP was blocked."
+    log_file: "{{ log_file }}"
+    log_dir: "{{ log_dir }}"
+    host: "{{ ansible_host }}"
+    input: "{{ test_result }}"
+    type: "uri"
+
+- name: "List postgres databases on master"
+  shell: "docker exec -u postgres pg_master psql -c 'select id,path,ip_address,access_datetime from blacklist' {{ db_name }} {{ db_username }}"
+  register: test_result
+  delegate_to: "{{ item }}"
+  with_items: "{{ groups['db-master'] }}"
+
+- name: "Write test logs"
+  write_test_logs:
+    description: "List postgres databases on master."
+    log_file: "{{ log_file }}"
+    log_dir: "{{ log_dir }}"
+    host: "{{ inventory_hostname }}"
+    input: "{{ test_result['results'][0] }}"
+    type: "database"
+  delegate_to: localhost
+  become: false
+
+- name: "List network acl ingress rules"
+  ec2_vpc_nacl_facts:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ region }}"
+    nacl_ids:
+      - "{{ terraform_output['outputs']['vpc-default-network-acl-id']['value'] }}"
+  register: test_result
+
+- name: "Write test logs"
+  write_test_logs:
+    description: "List network acl ingress rules."
+    log_file: "{{ log_file }}"
+    log_dir: "{{ log_dir }}"
+    host: "{{ inventory_hostname }}"
+    input: "{{ test_result }}"
+    type: "nacl"
+  delegate_to: localhost
+  become: false

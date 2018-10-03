@@ -100,7 +100,7 @@ def blacklist():
         ip_address=ip_address,
         access_datetime=access_datetime
     )
-    msg = Message("IP Blocked", recipients=["test@domain.com"], body=msg_body)
+    msg = Message("IP Blocked", recipients=["test@domain.com"], body=msg_body.replace("<br>", "\n"))
     mail.send(msg)
     return msg_body, 444
 
