@@ -16,6 +16,7 @@
     host: "{{ ansible_host }}"
     input: "{{ test_result }}"
     type: "uri"
+
 - name: "Request 10 Fibonacci numbers"
   uri:
     url: "http://{{ item }}/?n=10"
