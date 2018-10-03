@@ -46,17 +46,12 @@
   roles:
     - tests_from_localhost
 
-- hosts: app
+- hosts: localhost
+  gather_facts: no
   tasks:
   - debug:
-      msg: "APP SERVER: {{ inventory_hostname }}"
-
-- hosts: db-master
-  tasks:
-  - debug:
-      msg: "DB MASTER SERVER: {{ inventory_hostname }}"
-
-- hosts: db-slave
-  tasks:
-  - debug:
-      msg: "DB SLAVE SERVER: {{ inventory_hostname }}"
+      msg:
+        - "{% for host in groups['app'] %}[APP SERVER] {{ host }} private_ip: {{ hostvars[host].private_ip }}{% endfor %}"
+        - "{% for host in groups['db-master'] %}[DB-MASTER SERVER] {{ host }} private_ip: {{ hostvars[host].private_ip }}{% endfor %}"
+        - "{% for host in groups['db-slave'] %}[DB-SLAVE SERVER] {{ host }} private_ip: {{ hostvars[host].private_ip }}{% endfor %}"
+        - "You can find logs with the test results on {{ playbook_dir }}/logs/"
